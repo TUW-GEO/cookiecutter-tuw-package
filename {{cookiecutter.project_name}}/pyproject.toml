@@ -23,12 +23,10 @@ classifiers = [
 Repository = "{{cookiecutter.url}}"
 {%- endif %}
 
-[project.scripts]
-{{cookiecutter.project_slug}} = "{{cookiecutter.project_slug}}:main"
 
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.9.6,<0.10.0"]
+build-backend = "uv_build"
 
 [dependency-groups]
 test = [
@@ -36,28 +34,63 @@ test = [
     "pytest-cov"
 ]
 dev = [
-    "pytest",
     "ruff",
 ]
 
+[tool.uv]
+# For GDAL on Linux Machines to be installed via `uv pip install`
+find-links = ["https://girder.github.io/large_image_wheels"]
+
 [tool.ruff]
-exclude = ["tests"]
-line-length = 79
-lint.fixable = ["ALL"]
-lint.select = ["ALL"]
-lint.ignore = [
-    "ANN401", # Any type in func args are not allowed
-    "D203",   # no blank lines between class def and docstring
-    "D213",   # multiline summary should start in first line
-    "PGH",    # pygrep hooks are ignored
-    "TD002",  # todo author assignment is ignored
-    "TD003",  # todo issue assignment is ignored
-    "T201",   # allow print statements
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
 ]
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = []
+fixable = ["ALL"]
+unfixable = []
+
 
 [tool.ruff.format]
+# Same as Black.
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
 line-ending = "auto"
-docstring-code-line-length = 79
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+
 
 [tool.pytest.ini_options]
 approvaltests_geo_data_root = "{{ cookiecutter.approvaltests_geo_data_root }}"
