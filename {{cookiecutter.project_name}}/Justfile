@@ -1,6 +1,6 @@
 # Default command lists all available recipes
 _default:
-    @just --list
+	@just --list
 
 # clean all python build/compilation files and directories
 clean:
@@ -13,53 +13,41 @@ clean:
 	rm --force --recursive dist/
 	rm --force --recursive *.egg-info
 
-
-[private]
+# install dependencies in local venv, GDAL will be installed from wheel file.
 venv:
+	uv sync --group test --group dev
+
+# install dependencies in local venv, but assumes GDAL is preinstalled on the system.
+venv-no-gdal:
 	uv sync --group test --group dev --no-install-package gdal && uv pip install gdal=="$(shell gdal-config --version).*"
-
-# install dependencies in local venv environment and creates a new one if it doesn't exist yet using uv
-uv: venv
-
-# install local dependencies in venv environment
-uv-local: uv
-	uv pip install -r local-requirements.txt
-
-# install dependencies in venv environment and syncs with the gdal package
-[private]
-uv-release: venv
-	uv sync --group test --no-sources --no-install-package gdal && uv pip install gdal=="$(shell gdal-config --version).*"
 
 # run test with coverage
 test:
-   uv run pytest tests/ -rsx --verbose --color=yes --cov={{cookiecutter.project_slug}} --cov-report term-missing
+	uv run pytest tests/ -rsx --verbose --color=yes --cov={{cookiecutter.project_slug}} --cov-report term-missing
 
 # Write the version and commit hash to python file
-[private]
 version:
 	echo -e "__version__ = \"$(shell git describe --always --tags --abbrev=0)\"\n__commit__ = \"$(shell git rev-parse --short HEAD)\"" > src/{{cookiecutter.project_slug}}/_version.py
 
 #  build the package ready for distribution and update the version tag
 dist: version
-    uv build
+	uv build
 
 # lint python code using ruff
-[private]
 lint:
-    uvx ruff check . --fix
+	uvx ruff check . --fix
 
 # format python code using ruff
-[private]
 format:
-    uvx ruff format . --check --fix
+	uvx ruff format .
 
 # run the type checker ty
 types:
-    uvx ty check
+	uvx ty check
 
-# lint and format python code using ruff
-ruff: lint format
+# lint and format python code using ruff and run the type checker
+check: lint format types
 
 # setup the pre-commit hooks
 hooks:
-    pre-commit install --hook-type commit-msg --hook-type pre-push
+	uvx pre-commit install
