@@ -1,7 +1,7 @@
 """{{ cookiecutter.project_slug }}: Package to do ..."""
 
-import importlib.metadata
+from importlib.metadata import version
 
-__version__ = importlib.metadata.version(__name__)
+__version__ = version(__name__)
 
 NAME = "{{ cookiecutter.project_slug }}"
