@@ -64,24 +64,3 @@ approvaltests_geo_data_root = "{{ cookiecutter.approvaltests_geo_data_root }}"
 approvaltests_geo_input = "input/{{ cookiecutter.approvaldata_timestamp }}/"
 approvaltests_geo_approved = "approved/{{ cookiecutter.approvaldata_timestamp }}/"
 
-[tool.commitizen]
-name = "cz_conventional_commits"
-version = "0.0.0"
-version_files = [
-    "pyproject.toml:version"
-]
-update_changelog_on_bump = true
-major_version_zero = true
-style = [
-    ["qmark", "fg:#ff9d00 bold"],
-    ["question", "bold"],
-    ["answer", "fg:#ff9d00 bold"],
-    ["pointer", "fg:#ff9d00 bold"],
-    ["highlighted", "fg:#ff9d00 bold"],
-    ["selected", "fg:#cc5454"],
-    ["separator", "fg:#cc5454"],
-    ["instruction", ""],
-    ["text", ""],
-    ["disabled", "fg:#858585 italic"]
-]
-
