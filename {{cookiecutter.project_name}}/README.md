@@ -1,33 +1,41 @@
-# Readme
+# {{ cookiecutter.project_slug }}
 
 TODO: Add documentation!
 
 ## First Steps
 
-After you have just used cookiecutter to create this repo, you might want to follow these steps:
+After you have just used the `cookiecutter` to create this repo, you might want to follow these steps:
 
-1. Initialize a git repo
-2. Run `just hooks`
-3. Commit the initial state.
-4. Run `just uv` to set up the virtual environment
+1. Initialize a git repo with `git init` or you could also use `uv init`
+2. Install the Pre-Commit Hooks, to identify simple issues before commiting. You can run `just hooks` or use `uvx pre-commit install`
+3. Set up a virtual environment. You might want to use `uv add <package>` to add dependencies to your project (no `pip install` necessary)
 
 ## Development
 
-This project uses `uv` for package management and development tasks and `Just` for task automation.
-To install `Just`, follow the instructions in the [Just documentation](https://github.com/casey/just).
+> [!TIP]
+> This project uses `uv` for package management and development tasks and `Make`and/or `Just` for task automation.
+> To install `Just`, follow the instructions in the [Just Docs].
+>
+> To install `uv`, you can use the following command:
+>
+> ```bash
+> curl -LsSf https://astral.sh/uv/install.sh | sh
+>
+> # For convenience also possible via PyPI
+> pip install uv
+> ```
+>
+> or check the [uv Docs]
 
-To install `uv`, you can use the following command:
-
-```bash
-pip install uv
-```
-
-or check the [uv documentation](https://docs.astral.sh/uv/getting-started/installation/)
-
+The Pre-commit Hooks will lint and format your code, aswell as running some checks.
 In order to use the Pre-commit hooks, run:
 
 ```bash
-pre-commit install --hook-type commit-msg --hook-type pre-push
+pip install pre-commit
+pre-commit install
+
+# Alternatively via uv tool runner
+uvx pre-commit install
 ```
 
 or use the Justfile to do the same:
@@ -36,25 +44,22 @@ or use the Justfile to do the same:
 just hooks
 ```
 
-The Pre-commit Hooks will lint and format your code and your commit messages will be checked if
-they adhere to the `Conventional Commit` Standards. This allows the use of tools for automatic
-bumping and changlog writing.
+By default cody quality checks (formatter, linter and type-checker) are inplace, via the `Github Actions` (`GitLab CI/CD` has not been setup), which does the same as the `pre-commit` hooks.
 
-`commitizen` is such a tool. You can use it to automatically bump your repos version.
+Additionally the same code quality checks can be run manually via:
 
 ```bash
-# Install
-uv pip install commitizen
+just check
 
-# Bump the repo
-cz bump
+# or manually with
+uvx ruff check . --fix
+uvx ruff format .
+uvx ty check
 ```
 
-Depending on the previously made commit types `commitizen` will be determining the the next version number,
-which follows this pattern `<major>.<minor>.<patch>`
+> [!IMPORTANT]
+> The configuration for the linter, the formatter and the typechecker can be done in the `pyproject.toml` file.
+> By default ALL Linting Rules are enabled. If some rule are not desired in the project use the `exclude` field to disregard them.
 
-- type `feat` => Minor change
-- type `fix` => Patch
-- `<type>!` => Major change
-
-As long as `major_version_zero = true` in the pyproject file no major version increment will be made.
+[Just Docs]: https://github.com/casey/just
+[uv Docs]: https://docs.astral.sh/uv/getting-started/installation/
