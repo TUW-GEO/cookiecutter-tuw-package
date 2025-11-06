@@ -1,5 +1,8 @@
 # {{ cookiecutter.project_slug }}
 
+![Static Badge](https://img.shields.io/badge/TU_Wien_GEO-Project-gray?style=flat&labelColor=%23006699&color=gray)
+
+
 TODO: Add documentation!
 
 ## First Steps
