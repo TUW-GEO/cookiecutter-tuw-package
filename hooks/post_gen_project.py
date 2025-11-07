@@ -1,41 +1,70 @@
 #!/usr/bin/env python
-import os
+# ruff: noqa: D100, D101, D103, EXE001
 import shutil
+from enum import StrEnum, auto
+from pathlib import Path
 
-PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
-
-
-def remove_file(filepath):
-    os.remove(os.path.join(PROJECT_DIRECTORY, filepath))
+PROJECT_DIRECTORY = Path.cwd().resolve()
 
 
-def remove_dir(dir):
-    shutil.rmtree(os.path.join(PROJECT_DIRECTORY, dir))
+class SupportedCI(StrEnum):
+    GITHUB = auto()
+    GITLAB = auto()
+    BOTH = auto()
+
+
+def remove_file(file: str) -> None:
+    filepath: Path = PROJECT_DIRECTORY / file
+    filepath.unlink()
+
+
+def remove_dir(directory: str) -> None:
+    dir_path: Path = PROJECT_DIRECTORY / directory
+    shutil.rmtree(dir_path)
 
 
 if __name__ == "__main__":
-    has_approval = "{{ cookiecutter.approvaltests_geo_data_root }}" and (
-        "{{ cookiecutter.approvaltests_geo_data_at_ci_vm }}"
-        != "{{ cookiecutter.approvaltests_geo_data_root }}"
-    )
-    if not has_approval:
-        remove_file("ci/setup-approval-testdata.sh")
+    # Prompted variable values
+    approvaltests_root = "{{ cookiecutter.approvaltests_geo_data_root }}"
+    approvaltests_ci_vm = "{{ cookiecutter.approvaltests_geo_data_at_ci_vm }}"
+    vsc_repo = "{{ cookiecutter.vsc_repo }}"
+
     has_pypi = "{{ cookiecutter.external_pypis }}"
-    if not has_pypi:
-        remove_file("ci/add-pypi-indices.sh")
-    has_docker = {{cookiecutter.package_docker}}
-    if not has_docker:
-        remove_file("ci/deploy-docker-image.sh")
-        remove_file("ci/deploy-trunk-docker-image.sh")
-        remove_dir("docker")
+    has_docker = {{cookiecutter.package_docker}}  # noqa: F821 # type: ignore[reportUnhashable, reportUndefinedVariable]
+    has_code_quality_in_ci = {{cookiecutter.check_code_quality_in_ci}}  # noqa: F821 # type: ignore[reportUnhashable, reportUndefinedVariable]
+    has_approval = approvaltests_root and (approvaltests_root != approvaltests_ci_vm)
+
     if not has_approval and not has_pypi and not has_docker:
         remove_dir("ci")
-
-    if "{{ cookiecutter.vsc_repo }}" == "gitlab":
-        remove_dir(".github")
-    elif "{{ cookiecutter.vsc_repo }}" == "github":
-        remove_file(".gitlab-ci.yml")
+        remove_dir("docker")
     else:
-        raise NotImplementedError(
-            "The repository {{ cookiecutter.vsc_repo }} specified in cookiecutter.vsc_repo, is currently not supported.\nSpecify either 'gitlab' or 'github'"
-        )
+        if not has_approval:
+            remove_file("ci/setup-approval-testdata.sh")
+
+        if not has_pypi:
+            remove_file("ci/add-pypi-indices.sh")
+
+        if not has_docker:
+            remove_file("ci/deploy-docker-image.sh")
+            remove_file("ci/deploy-trunk-docker-image.sh")
+            remove_dir("docker")
+
+    match vsc_repo:
+        case SupportedCI.GITLAB:
+            remove_dir(".github")
+        case SupportedCI.GITHUB:
+            remove_file(".gitlab-ci.yml")
+        case SupportedCI.BOTH:
+            # Delete none
+            pass
+        case _:
+            err = f"""
+            The repository {vsc_repo!r} specified in cookiecutter.vsc_repo,
+            is currently not supported.
+            Must be one of {[member.value for member in SupportedCI]}.
+            """
+            raise NotImplementedError(err)
+
+    if not has_code_quality_in_ci:
+        remove_file(".github/workflows/code_quality.yml")
+        remove_file(".github/actions/setup/action.yml")
