@@ -4,7 +4,7 @@ name = "{{cookiecutter.project_slug}}"
 dynamic = ["version"]
 description = "{{cookiecutter.project_description}}"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = []
 classifiers = [
     "Intended Audience :: Science/Research",
@@ -12,7 +12,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: GIS",
     "Topic :: Software Development :: Libraries",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Operating System :: POSIX",
     "Natural Language :: English",
@@ -32,9 +32,6 @@ build-backend = "uv_build"
 test = [
     "pytest",
     "pytest-cov"
-]
-dev = [
-    "ruff",
 ]
 
 [tool.uv]
