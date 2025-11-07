@@ -8,7 +8,7 @@ TODO: Add documentation!
 
 After you have just used the `cookiecutter` to create this repo, you might want to follow these steps:
 
-1. Initialize a git repo with `git init` or you could also use `uv init`
+1. Initialize a git repo with `git init`
 2. Install the Pre-Commit Hooks, to identify simple issues before commiting. You can run `just hooks` or use `uvx pre-commit install`
 3. Set up a virtual environment. You might want to use `uv add <package>` to add dependencies to your project (no `pip install` necessary)
 
