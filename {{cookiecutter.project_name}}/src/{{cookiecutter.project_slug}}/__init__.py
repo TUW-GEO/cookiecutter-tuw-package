@@ -4,4 +4,4 @@ from importlib.metadata import version
 
 __version__ = version(__name__)
 
-NAME = "{{ cookiecutter.project_slug }}"
+name = "{{ cookiecutter.project_slug }}"

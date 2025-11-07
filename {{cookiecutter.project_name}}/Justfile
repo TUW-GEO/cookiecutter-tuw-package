@@ -25,23 +25,18 @@ venv-no-gdal:
 test:
 	uv run pytest tests/ -rsx --verbose --color=yes --cov={{cookiecutter.project_slug}} --cov-report term-missing
 
-# Write the version and commit hash to python file
-version:
-	echo -e "__version__ = \"$(shell git describe --always --tags --abbrev=0)\"\n__commit__ = \"$(shell git rev-parse --short HEAD)\"" > src/{{cookiecutter.project_slug}}/_version.py
-
-#  build the package ready for distribution and update the version tag
-dist: version
-	uv build
-
 # lint python code using ruff
+[private]
 lint:
 	uvx ruff check . --fix
 
 # format python code using ruff
+[private]
 format:
 	uvx ruff format .
 
 # run the type checker ty
+[private]
 types:
 	uvx ty check
 
@@ -51,3 +46,27 @@ check: lint format types
 # setup the pre-commit hooks
 hooks:
 	uvx pre-commit install
+{% raw %}
+# bump the version in pyproject.toml and tag and commit the changes
+bump version:
+	@if grep -q '^version *= *' pyproject.toml; then \
+		sed -i 's/^version *= *.*/version = "{{version}}"/' pyproject.toml;\
+	else \
+		echo "Ooops... something went wrong.";\
+	fi
+	git add pyproject.toml
+	git commit -m "Bumped version to {{version}}"
+	git tag "v{{version}}"
+	@echo "{{GREEN}} Version has been bumped.{{NORMAL}}"
+
+# build the source distribution and wheel file with uv (bump version first)
+dist:
+	uv build
+
+# initialize a git repo and add all files
+init:
+	git init
+	git add .
+	git commit -m "initial commit"
+	@echo "{{GREEN}}Git has been initialized{{NORMAL}}"
+{% endraw %}
