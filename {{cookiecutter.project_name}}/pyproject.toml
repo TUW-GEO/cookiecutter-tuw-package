@@ -29,6 +29,7 @@ requires = ["uv_build>=0.9.6,<0.10.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
+dev = []
 test = [
     "pytest",
     "pytest-cov"
@@ -74,7 +75,11 @@ indent-width = 4
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = []
+ignore = [
+    "COM812",  # missing-trailing-comma (may conflict with ruff formatter)
+    "D203",    # incorrect-blank-line-before-class (conflicts with D211)
+    "D213",    # multi-line-summary-second-line (conflicts with D212)
+]
 fixable = ["ALL"]
 unfixable = []
 
@@ -93,4 +98,3 @@ docstring-code-line-length = "dynamic"
 approvaltests_geo_data_root = "{{ cookiecutter.approvaltests_geo_data_root }}"
 approvaltests_geo_input = "input/{{ cookiecutter.approvaldata_timestamp }}/"
 approvaltests_geo_approved = "approved/{{ cookiecutter.approvaldata_timestamp }}/"
-
