@@ -1,2 +1,0 @@
-# specify local packages like i.e.:
-# -e your-package @ file:///${PROJECT_ROOT/../path/to/your-package/

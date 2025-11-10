@@ -1,4 +1,7 @@
-from {{ cookiecutter.project_slug }}._version import __commit__
-from {{ cookiecutter.project_slug }}._version import __version__
+"""{{ cookiecutter.project_slug }}: Package to do ..."""
+
+from importlib.metadata import version
+
+__version__ = version(__name__)
 
 name = "{{ cookiecutter.project_slug }}"
