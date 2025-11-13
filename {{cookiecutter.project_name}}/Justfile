@@ -1,72 +1,82 @@
 # Default command lists all available recipes
 _default:
-	@just --list
+    @just --list
+
+alias b := bump
+alias c := clean
+alias d := dist
+alias h := hooks
+alias q := check
+alias t := test
 
 # clean all python build/compilation files and directories
 clean:
-	find . -name '*.pyc' -exec rm --force {} +
-	find . -name '*.pyo' -exec rm --force {} +
-	find . -name '*~' -exec rm --force {} +
-	rm --force .coverage
-	rm --force --recursive .pytest_cache
-	rm --force --recursive build/
-	rm --force --recursive dist/
-	rm --force --recursive *.egg-info
+    find . -name '*.pyc' -exec rm --force {} +
+    find . -name '*.pyo' -exec rm --force {} +
+    find . -name '*~' -exec rm --force {} +
+    rm --force .coverage
+    rm --force --recursive .pytest_cache
+    rm --force --recursive build/
+    rm --force --recursive dist/
+    rm --force --recursive *.egg-info
 
 # install dependencies in local venv, GDAL will be installed from wheel file.
 venv:
-	uv sync --group test --group dev
+    uv sync --group test --group dev
 
 # install dependencies in local venv, but assumes GDAL is preinstalled on the system.
 venv-no-gdal:
-	uv sync --group test --group dev --no-install-package gdal && uv pip install gdal=="$(shell gdal-config --version).*"
+    uv sync --group test --group dev --no-install-package gdal && uv pip install gdal=="$(shell gdal-config --version).*"
 
 # run test with coverage
 test:
-	uv run pytest tests/ -rsx --verbose --color=yes --cov={{cookiecutter.project_slug}} --cov-report term-missing
+    uv run pytest tests/ -rsx --verbose --color=yes --cov={{cookiecutter.project_slug}} --cov-report term-missing
 
 # lint python code using ruff
 [private]
 lint:
-	uvx ruff check . --fix
+    uvx ruff check . --fix
 
 # format python code using ruff
 [private]
 format:
-	uvx ruff format .
+    uvx ruff format .
 
 # run the type checker ty
 [private]
 types:
-	uvx ty check
+    uvx ty check
 
 # lint and format python code using ruff and run the type checker
 check: lint format types
 
 # setup the pre-commit hooks
 hooks:
-	uvx pre-commit install
+    uvx pre-commit install
+
+[confirm("Do you really want to bump? (y/n)")]
+[private]
+prompt-confirm:
+
 {% raw %}
-# bump the version in pyproject.toml and tag and commit the changes
-bump version:
-	@if grep -q '^version *= *' pyproject.toml; then \
-		sed -i 's/^version *= *.*/version = "{{version}}"/' pyproject.toml;\
-	else \
-		echo "Ooops... something went wrong.";\
-	fi
-	git add pyproject.toml
-	git commit -m "Bumped version to {{version}}"
-	git tag -a "v{{version}}"
-	@echo "{{GREEN}} Version has been bumped.{{NORMAL}}"
+# bump the version, commit the changes and add a tag (increment can be major, minor, patch,...)
+bump INCREMENT:
+    uv version --bump {{ INCREMENT }} --dry-run
+    @just prompt-confirm
+    uv version --bump {{ INCREMENT }}
+    git add pyproject.toml
+    git commit -m "Bumped version to `uv version --short`"
+    git tag -a "v`uv version --short`"
+    @echo "{{ GREEN }}{{ BOLD }}Version has been bumped to `uv version --short`.{{ NORMAL }}"
 
 # build the source distribution and wheel file with uv (bump version first)
 dist:
-	uv build
+    uv build
 
 # initialize a git repo and add all files
 init:
-	git init
-	git add .
-	git commit -m "initial commit"
-	@echo "{{GREEN}}Git has been initialized{{NORMAL}}"
+    git init
+    git add .
+    git commit -m "initial commit"
+    @echo "{{ GREEN }}{{ BOLD }}Git has been initialized{{ NORMAL }}"
 {% endraw %}
