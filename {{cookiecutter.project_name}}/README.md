@@ -8,7 +8,7 @@ TODO: Add documentation!
 
 After you have just used the `cookiecutter` to create this repo, you might want to follow these steps:
 
-1. Initialize a git repo with `git init`
+1. Initialize a git repo with `git init` or `just init`
 2. Install the Pre-Commit Hooks, to identify simple issues before commiting. You can run `just hooks` or use `uvx pre-commit install`
 3. Set up a virtual environment. You might want to use `uv add <package>` to add dependencies to your project (no `pip install` necessary)
 
@@ -62,6 +62,15 @@ uvx ty check
 > [!IMPORTANT]
 > The configuration for the linter, the formatter and the typechecker can be done in the `pyproject.toml` file.
 > By default ALL Linting Rules are enabled. If some rule are not desired in the project use the `exclude` field to disregard them.
+
+## Further Features
+
+This Templates provides you with default configurations for `Gitlab` and `Github` CI Pipelines.
+But those are to be seen as minimal working configurations, and can be extended by the user.
+Some more advanced configurations can be setup by uncommenting the desired lines of code in the `.gitlab-ci.yml`
+
+Further more there are example `docs` in this repository, which you can use as a startingpoint for your code documentation.
+A certain framework has been choosen, but it only serves as a suggestion to you.
 
 [Just Docs]: https://github.com/casey/just
 [uv Docs]: https://docs.astral.sh/uv/getting-started/installation/
