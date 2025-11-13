@@ -27,11 +27,12 @@ if __name__ == "__main__":
     # Prompted variable values
     approvaltests_root = "{{ cookiecutter.approvaltests_geo_data_root }}"
     approvaltests_ci_vm = "{{ cookiecutter.approvaltests_geo_data_at_ci_vm }}"
-    vsc_repo = "{{ cookiecutter.vsc_repo }}"
+    vsc_repo = "{{ cookiecutter.remote_repo_for_ci }}"
 
     has_pypi = "{{ cookiecutter.external_pypis }}"
     has_docker = {{cookiecutter.package_docker}}  # noqa: F821 # type: ignore[reportUnhashable, reportUndefinedVariable]
     has_code_quality_in_ci = {{cookiecutter.check_code_quality_in_ci}}  # noqa: F821 # type: ignore[reportUnhashable, reportUndefinedVariable]
+    has_include_docs = {{cookiecutter.include_docs}}  # noqa: F821 # type: ignore[reportUnhashable, reportUndefinedVariable]
     has_approval = approvaltests_root and (approvaltests_root != approvaltests_ci_vm)
 
     if not has_approval and not has_pypi and not has_docker:
@@ -48,6 +49,10 @@ if __name__ == "__main__":
             remove_file("ci/deploy-docker-image.sh")
             remove_file("ci/deploy-trunk-docker-image.sh")
             remove_dir("docker")
+
+    if not has_include_docs:
+        remove_file("zensical.toml")
+        remove_dir("docs")
 
     match vsc_repo:
         case SupportedCI.GITLAB:

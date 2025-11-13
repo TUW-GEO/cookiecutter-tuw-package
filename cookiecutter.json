@@ -8,8 +8,9 @@
   "approvaltests_geo_data_root": "",
   "approvaltests_geo_data_at_ci_vm": "/shares{{ cookiecutter.approvaltests_geo_data_root }}",
   "approvaldata_timestamp": "",
-  "vsc_repo": ["both", "gitlab", "github"],
+  "remote_repo_for_ci": ["both", "gitlab", "github"],
   "external_pypis": "",
   "package_docker": false,
-  "check_code_quality_in_ci": true
+  "check_code_quality_in_ci": true,
+  "include_docs": false
 }
