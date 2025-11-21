@@ -1,23 +1,33 @@
 name: Test with coverage
 
-on: [ push, pull_request ]
+# TODO: Uncomment the next line to activate workflow
+# You will need to setup a github token before.
+# on: [ push, pull_request ]
 
 jobs:
   test_coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v5
+      - name: Install uv and set the python version
+        uses: ./.github/actions/setup
         with:
-          python-version: 3.9
-      - name: Test
+          python-version: 3.13
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install the Project
+        run: uv sync --locked --all-extras --dev
+
+      - name: Run Tests
         run: |
-          make test
+          uv run --with pytest pytest tests --verbose --color=yes --cov={{cookiecutter.project_slug}} --cov-report term-missing
           git push origin --delete python-coverage-comment-action-data || true
+
       - name: Coverage comment
         id: coverage_comment
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
-          GITHUB_TOKEN: ${{ "{{" }} github.token {{ "}}" }}
+          GITHUB_TOKEN: ${{ github.token }}
           VERBOSE: false
