@@ -16,6 +16,9 @@ It comes filled with a bunch of modern features from the python ecosystem.
 
 ## Useage
 
+> [!NOTE]
+> This cookiecutter tries to adhere to the [Python Developer Tooling Handbook](https://pydevtools.com/handbook/explanation/modern-python-project-setup-guide-for-ai-assistants/)
+
 To initialize a new repository with this `cookiecutter` template run the following command:
 
 ```bash
