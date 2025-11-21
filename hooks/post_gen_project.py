@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # ruff: noqa: D100, D101, D103, EXE001
 import shutil
-from enum import StrEnum, auto
+from enum import Enum
 from pathlib import Path
 
 PROJECT_DIRECTORY = Path.cwd().resolve()
 
 
-class SupportedCI(StrEnum):
-    GITHUB = auto()
-    GITLAB = auto()
-    BOTH = auto()
+class SupportedCI(Enum):
+    GITHUB = "github"
+    GITLAB = "gitlab"
+    BOTH = "both"
 
 
 def remove_file(file: str) -> None:
