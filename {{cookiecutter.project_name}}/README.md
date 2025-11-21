@@ -26,13 +26,14 @@ In order to use the Pre-commit hooks, run:
 
 ```bash
 uvx pre-commit install
-```
 
-or use the Justfile to do the same:
-
-```bash
+# or use the Justfile
 just hooks
 ```
+
+> [!TIP]
+> Checkout the `Justfile` or list all recipes with `just`
+> to find commands that help you in your work.
 
 By default cody quality checks (formatter, linter and type-checker) are inplace, via `Github Actions` and `GitLab CI/CD`,
 which does the same as the `pre-commit` hooks.
