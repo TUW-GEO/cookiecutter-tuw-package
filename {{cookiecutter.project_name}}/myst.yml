@@ -1,0 +1,25 @@
+version: 1
+
+project:
+  title: {{cookiecutter.project_name}}
+  authors:
+    - name: {{cookiecutter.author}}
+  source_url: https://example.com
+  edit_url: https://example.com
+  open_access: true
+  toc:
+    - file: README.md
+    - title: "API"
+      children:
+        - file: docs/index.ipynb
+    - title: "Developing"
+      children:
+        - file: CONTRIBUTING.md
+  error_rules:
+    - rule: image-downloads
+      severity: ignore
+    - rule: image-format-converts
+      severity: ignore
+    - rule: link-resolves
+      severity: ignore
+      keys: [] # List links here that will not be checked if they exist
