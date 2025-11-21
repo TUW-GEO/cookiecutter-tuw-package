@@ -1,7 +1,7 @@
 # {{ cookiecutter.project_slug }}
 
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
-[![Static Badge](https://img.shields.io/badge/TU_Wien_GEO-Project-gray?style=flat&labelColor=%23006699&color=gray&link=https%3A%2F%2Fwww.tuwien.at%2Fen%2Fmg%2Fgeo)]
+[![Static Badge](https://img.shields.io/badge/TU_Wien_GEO-Project-gray?style=flat&labelColor=%23006699&color=gray&link=https%3A%2F%2Fwww.tuwien.at%2Fen%2Fmg%2Fgeo)](https://www.tuwien.at/mg/geo)
 
 > [!WARNING]
 > Add your own documentation!
