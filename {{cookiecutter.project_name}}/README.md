@@ -2,7 +2,8 @@
 
 ![Static Badge](https://img.shields.io/badge/TU_Wien_GEO-Project-gray?style=flat&labelColor=%23006699&color=gray&link=https%3A%2F%2Fwww.tuwien.at%2Fen%2Fmg%2Fgeo)
 
-TODO: Add documentation!
+> [!IMPORTANT]
+> Add your own documentation!
 
 ## First Steps
 
