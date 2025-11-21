@@ -1,6 +1,6 @@
 # Default command lists all available recipes
 _default:
-    @just --list
+    @just --list --unsorted
 
 alias b := bump
 alias c := clean
@@ -9,73 +9,110 @@ alias h := hooks
 alias q := check
 alias t := test
 
-# clean all python build/compilation files and directories
-clean:
-    find . -name '*.pyc' -exec rm --force {} +
-    find . -name '*.pyo' -exec rm --force {} +
-    find . -name '*~' -exec rm --force {} +
-    rm --force .coverage
-    rm --force --recursive .pytest_cache
-    rm --force --recursive build/
-    rm --force --recursive dist/
-    rm --force --recursive *.egg-info
-
-# install dependencies in local venv, GDAL will be installed from wheel file.
-venv:
-    uv sync --group test --group dev
-
-# install dependencies in local venv, but assumes GDAL is preinstalled on the system.
-venv-no-gdal:
-    uv sync --group test --group dev --no-install-package gdal && uv pip install gdal=="$(shell gdal-config --version).*"
-
-# run test with coverage
-test:
-    uv run pytest tests/ -rsx --verbose --color=yes --cov={{cookiecutter.project_slug}} --cov-report term-missing
+PROJ := `uv version --short`
 
 # lint python code using ruff
 [private]
-lint:
-    uvx ruff check . --fix
+check-lint:
+    uv run ruff check . --fix
 
 # format python code using ruff
 [private]
-format:
-    uvx ruff format .
+check-format:
+    uv run ruff format .
 
 # run the type checker ty
 [private]
-types:
-    uvx ty check
+check-types:
+    uv run ty check
 
-# lint and format python code using ruff and run the type checker
-check: lint format types
+# lint, format with ruff and type-check with ty
+check: check-lint check-format check-types
+
+# run tests with coverage
+test:
+    uv run pytest tests/
+
+# run tests for all the supported Python versions
+testall:
+    uv run --python=3.10 pytest
+    uv run --python=3.11 pytest
+    uv run --python=3.12 pytest
+    uv run --python=3.13 pytest
+    uv run --python=3.14 pytest
+
+{% raw %}
+# run all the formatting, linting, and testing commands
+ci PYTHON="3.12":
+    uv run --python={{ PYTHON }} ruff format .
+    uv run --python={{ PYTHON }} ruff check . --fix
+    uv run --python={{ PYTHON }} ty check .
+    uv run --python={{ PYTHON }} pytest tests/
 
 # setup the pre-commit hooks
 hooks:
     uvx pre-commit install
 
+# print the current status of the project
+status:
+    @echo "Project Version: {{ PROJ }}"
+    @echo "Running on: `uname`"
+
+# clean all python build/compilation files and directories
+clean: clean-build clean-pyc clean-test
+
+# remove build artifacts
+[private]
+clean-build:
+    rm -fr build/
+    rm -fr dist/
+    rm -fr .eggs/
+    find . -name '*.egg-info' -exec rm -fr {} +
+    find . -name '*.egg' -exec rm -f {} +
+
+# remove Python file artifacts
+[private]
+clean-pyc:
+    find . -name '*.pyc' -exec rm -f {} +
+    find . -name '*.pyo' -exec rm -f {} +
+    find . -name '*~' -exec rm -f {} +
+    find . -name '__pycache__' -exec rm -fr {} +
+
+# remove test and coverage artifacts
+[private]
+clean-test:
+    rm -f .coverage
+    rm -fr htmlcov/
+    rm -fr .pytest_cache
+
+# install dependencies in local venv
+venv:
+    uv sync
+
 [confirm("Do you really want to bump? (y/n)")]
 [private]
 prompt-confirm:
 
-{% raw %}
 # bump the version, commit the changes and add a tag (increment can be major, minor, patch,...)
-bump INCREMENT:
-    uv version --bump {{ INCREMENT }} --dry-run
+bump INCREMENT: && tag
+    @uv version --bump {{ INCREMENT }} --dry-run
     @just prompt-confirm
     uv version --bump {{ INCREMENT }}
+
+# tag the latest version
+tag VERSION=`uv version --short`:
     git add pyproject.toml
-    git commit -m "Bumped version to `uv version --short`"
-    git tag -a "v`uv version --short`"
-    @echo "{{ GREEN }}{{ BOLD }}Version has been bumped to `uv version --short`.{{ NORMAL }}"
+    git commit -a -m "Bumped version to {{VERSION}}"
+    git tag "v{{VERSION}}"
+    @echo "{{ GREEN }}{{ BOLD }}Version has been bumped to {{VERSION}}.{{ NORMAL }}"
 
 # build the source distribution and wheel file with uv (bump version first)
 dist:
     uv build
 
 # initialize a git repo and add all files
-init:
-    git init
+init: venv
+    git init --initial-branch=main
     git add .
     git commit -m "initial commit"
     @echo "{{ GREEN }}{{ BOLD }}Git has been initialized{{ NORMAL }}"
