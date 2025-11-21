@@ -14,6 +14,7 @@
   "check_code_quality_in_ci": ["yes", "no"],
   "include_docs": ["yes", "no"],
   "license": ["MIT", "Unlicense", "Apache License 2.0", "None"],
+  "_copy_without_render": [".github/workflows/*"],
   "__prompts__": {
     "author": "Enter the authors name",
     "author_email": "Enter the authors email",
