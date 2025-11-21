@@ -9,10 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+
       - name: Install uv and set the python version
-        uses: ./.github/actions/setup
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: 3.13
+          enable-cache: true
 
       - name: Set up Python
         run: uv python install
@@ -28,6 +30,6 @@ jobs:
       - name: Coverage comment
         id: coverage_comment
         uses: py-cov-action/python-coverage-comment-action@v3
-        with:
+        with:{% raw %}
           GITHUB_TOKEN: ${{ github.token }}
-          VERBOSE: false
+          VERBOSE: false{% endraw %}

@@ -3,7 +3,7 @@ name: Test on different platforms
 on: [push, pull_request]
 
 jobs:
-  build:
+  build: {% raw %}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -17,15 +17,15 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macos-latest
+
     steps:
       - uses: actions/checkout@v5
-        with:
-          lfs: "true"
 
-      - name: Install uv and set the python version ${{matrix.python-version}}
-        uses: ./github/actions/setup
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
+          enable-cache: true
 
       - name: Set up Python
         run: uv python install
@@ -33,5 +33,5 @@ jobs:
       - name: Install the Project
         run: uv sync --locked --all-extras --dev
 
-      - name: Run Tests
+      - name: Run Tests{% endraw %}
         run: uv run --with pytest pytest tests --verbose --color=yes --cov={{cookiecutter.project_slug}} --cov-report term-missing
