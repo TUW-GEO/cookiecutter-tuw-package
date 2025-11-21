@@ -84,6 +84,11 @@ fixable = ["ALL"]
 unfixable = []
 
 
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests}/*" = ["E402", "ANN201", "D", "INP001", "S101"]
+
+
 [tool.ruff.format]
 # Same as Black.
 quote-style = "double"
