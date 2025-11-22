@@ -27,7 +27,7 @@ def remove_file(file: str) -> None:
         filepath: Path = PROJECT_DIRECTORY / file
         filepath.unlink()
     except FileNotFoundError:
-        print(f"[yellow]Warning: File not found. {file}")
+        print(f"[cyan]Info: File has already been removed {file!r}")
 
 
 def remove_dir(directory: str) -> None:
@@ -37,11 +37,13 @@ def remove_dir(directory: str) -> None:
 
 if __name__ == "__main__":
     # Prompted variable values
-    approvaltests_root: str = "{{ cookiecutter.approvaltests_geo_data_root }}"
+    approvaltests_root: str = (
+        "{{ cookiecutter.approvaltests_geo_data_root }}"  # defaults to ""
+    )
     approvaltests_ci_vm: str = "{{ cookiecutter.approvaltests_geo_data_at_ci_vm }}"
     vsc_repo: str = "{{ cookiecutter.remote_repo_for_ci }}"
 
-    has_pypi: str = "{{ cookiecutter.external_pypis }}"
+    has_pypi: str = "{{ cookiecutter.external_pypis }}"  # defaults to ""
     has_docker: bool = "{{cookiecutter.package_docker}}" == BoolAnswer.YES.value
     has_code_quality_in_ci: bool = (
         "{{cookiecutter.check_code_quality_in_ci}}" == BoolAnswer.YES.value
@@ -56,15 +58,12 @@ if __name__ == "__main__":
     else:
         if not has_approval:
             remove_file("ci/setup-approval-testdata.sh")
-
         if not has_pypi:
             remove_file("ci/add-pypi-indices.sh")
-
         if not has_docker:
             remove_file("ci/deploy-docker-image.sh")
             remove_file("ci/deploy-trunk-docker-image.sh")
             remove_dir("docker")
-
     if not has_include_docs:
         remove_file("myst.yml")
         remove_dir("docs")
@@ -72,7 +71,7 @@ if __name__ == "__main__":
     match vsc_repo:
         case SupportedCI.GITLAB.value:
             remove_dir(".github")
-        case SupportedCI.GITHUB:
+        case SupportedCI.GITHUB.value:
             remove_file(".gitlab-ci.yml")
         case SupportedCI.BOTH.value:
             # Delete none
@@ -89,4 +88,4 @@ if __name__ == "__main__":
         remove_file(".github/workflows/code_quality.yml")
         remove_file(".github/actions/setup/action.yml")
 
-    print(":rocket: [green bold] Project successfully initialized.")
+    print("[green bold]:rocket:Project successfully initialized.")
