@@ -93,8 +93,8 @@ venv:
 [private]
 prompt-confirm:
 
-# bump the version, commit the changes and add a tag (increment can be major, minor, patch,...)
-bump INCREMENT: && tag
+# bump the version, commit and add a tag <major|minor|patch|...>
+bump INCREMENT="patch": && tag
     @uv version --bump {{ INCREMENT }} --dry-run
     @just prompt-confirm
     uv version --bump {{ INCREMENT }}
@@ -102,11 +102,16 @@ bump INCREMENT: && tag
 # tag the latest version
 tag VERSION=`uv version --short`:
     git add pyproject.toml
-    git commit -a -m "Bumped version to {{VERSION}}"
-    git tag "v{{VERSION}}"
+    git add uv.lock
+    git commit -m "Bumped version to {{VERSION}}"
+    git tag -a "v{{VERSION}}"
     @echo "{{ GREEN }}{{ BOLD }}Version has been bumped to {{VERSION}}.{{ NORMAL }}"
 
-# build the source distribution and wheel file with uv (bump version first)
+# preview the documentation locally (serve the myst website)
+docs:
+    uv run myst
+
+# build the source distribution and wheel file
 dist:
     uv build
 
