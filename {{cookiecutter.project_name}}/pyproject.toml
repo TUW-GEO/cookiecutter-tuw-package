@@ -45,6 +45,8 @@ dev = [
 
 # Uncomment the next section to add pre-built wheel files of non-python
 # libraries to your project. In this example GDAL has been choosen.
+# Read more at:
+# https://github.com/astral-sh/uv/issues/11466
 #
 # [tool.uv]
 # find-links = ["https://girder.github.io/large_image_wheels"]
