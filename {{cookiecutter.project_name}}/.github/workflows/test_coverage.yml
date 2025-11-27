@@ -1,23 +1,38 @@
 name: Test with coverage
 
-on: [ push, pull_request ]
+on:
+  pull_request:
+  push:
+    branches:
+      - main
 
 jobs:
   test_coverage:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v5
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: 3.9
-      - name: Test
+          python-version: 3.13
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install the Project
+        run: uv sync --locked --all-extras --dev
+
+      - name: Run Tests
         run: |
-          make test
-          git push origin --delete python-coverage-comment-action-data || true
+          uv run pytest tests --verbose --color=yes --cov={{cookiecutter.project_slug}} --cov-report term-missing
+
       - name: Coverage comment
         id: coverage_comment
         uses: py-cov-action/python-coverage-comment-action@v3
-        with:
-          GITHUB_TOKEN: ${{ "{{" }} github.token {{ "}}" }}
-          VERBOSE: false
+        with:{% raw %}
+          GITHUB_TOKEN: ${{ github.token }}
+          VERBOSE: false{% endraw %}

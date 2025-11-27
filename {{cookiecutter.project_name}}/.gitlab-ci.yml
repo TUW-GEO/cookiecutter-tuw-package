@@ -1,8 +1,33 @@
 stages:
+  - build
   - test
   - deploy
 {%- if cookiecutter.package_docker %}
   - package
+{%- endif %}
+
+{%- if cookiecutter.check_code_quality_in_ci %}
+.base_ruff:
+  stage: build
+  interruptible: true
+  image:
+    name: ghcr.io/astral-sh/ruff:0.14.4-alpine
+  before_script:
+    - cd $CI_PROJECT_DIR
+    - ruff --version
+
+Ruff Check:
+  extends: .base_ruff
+  script:
+    - ruff check --output-format=gitlab > code-quality-report.json
+  artifacts:
+    reports:
+      codequality: $CI_PROJECT_DIR/code-quality-report.json
+
+Ruff Format:
+  extends: .base_ruff
+  script:
+    - ruff format --diff
 {%- endif %}
 
 .test-template:
@@ -40,8 +65,8 @@ stages:
 test-main:
   extends: .test-template
   script:
-    - make uv
-    - make test
+    - uv sync --dev
+    - uv run pytest tests
   rules:
     - if: '$CI_COMMIT_TAG == null'
       when: always
@@ -49,8 +74,8 @@ test-main:
 test-release:
   extends: .test-template
   script:
-    - make uv-release
-    - pytest tests/ -rsx --verbose --color=yes --cov={{cookiecutter.project_slug}} --cov-report term-missing --junitxml ./ci-test-results.xml
+    - uv sync --no-sources --no-install-package gdal && uv pip install gdal=="$(shell gdal-config --version).*"
+    - uv run pytest tests/ -rsx --verbose --color=yes --cov={{cookiecutter.project_slug}} --cov-report term-missing --junitxml ./ci-test-results.xml
     - coverage json
   rules:
     - if: '$CI_COMMIT_TAG'
@@ -62,7 +87,7 @@ deploy-pypi:
   needs:
     - test-release
   script:
-    - make dist
+    - uv build
     - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
   rules:
     - if: $CI_COMMIT_TAG
@@ -107,28 +132,4 @@ package-trunk-docker:
     - dind
 {%- endif %}
 
-{%- if cookiecutter.check_code_quality_in_ci %}
-
-.base_ruff:
-  stage: build
-  interruptible: true
-  image:
-    name: ghcr.io/astral-sh/ruff:0.14.4-alpine
-  before_script:
-    - cd $CI_PROJECT_DIR
-    - ruff --version
-
-Ruff Check:
-  extends: .base_ruff
-  script:
-    - ruff check --output-format=gitlab > code-quality-report.json
-  artifacts:
-    reports:
-      codequality: $CI_PROJECT_DIR/code-quality-report.json
-
-Ruff Format:
-  extends: .base_ruff
-  script:
-    - ruff format --diff
-{%- endif %}
 

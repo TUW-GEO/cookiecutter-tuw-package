@@ -4,7 +4,7 @@ name = "{{cookiecutter.project_slug}}"
 version = "0.1.0"
 description = "{{cookiecutter.project_description}}"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = []
 classifiers = [
     "Intended Audience :: Science/Research",
@@ -23,51 +23,36 @@ classifiers = [
 Repository = "{{cookiecutter.url}}"
 {%- endif %}
 
-
 [build-system]
 requires = ["uv_build>=0.9.6,<0.10.0"]
 build-backend = "uv_build"
 
+
 [dependency-groups]
-dev = []
-test = [
-    "pytest",
-    "pytest-cov"
+# Unlike optional dependencies, development dependencies are local-only
+# and will not be included in the project requirements when
+# published to PyPI or other indexes
+dev = [
+{%- if cookiecutter.include_docs == "yes" -%}
+ "ipykernel>=7.1.0",
+ "mystmd>=1.6.6",{% endif %}
+ "pytest>=9.0.1",
+ "pytest-cov>=7.0.0",
+ "ruff>=0.14.5",
+ "ty>=0.0.1a27",
 ]
 
-[tool.uv]
-# For GDAL on Linux Machines to be installed via `uv pip install`
-find-links = ["https://girder.github.io/large_image_wheels"]
+
+# Uncomment the next section to add pre-built wheel files of non-python
+# libraries to your project. In this example GDAL has been choosen.
+# Read more at:
+# https://github.com/astral-sh/uv/issues/11466
+#
+# [tool.uv]
+# find-links = ["https://girder.github.io/large_image_wheels"]
+
 
 [tool.ruff]
-exclude = [
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".git-rewrite",
-    ".hg",
-    ".ipynb_checkpoints",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".pyenv",
-    ".pytest_cache",
-    ".pytype",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    ".vscode",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "site-packages",
-    "venv",
-]
 # Same as Black.
 line-length = 88
 indent-width = 4
@@ -84,6 +69,11 @@ fixable = ["ALL"]
 unfixable = []
 
 
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests}/*" = ["E402", "ANN201", "D", "INP001", "S101"]
+
+
 [tool.ruff.format]
 # Same as Black.
 quote-style = "double"
@@ -95,6 +85,10 @@ docstring-code-line-length = "dynamic"
 
 
 [tool.pytest.ini_options]
+addopts = "--cov={{ cookiecutter.project_slug }} --cov-report term-missing -rsx --verbose --color=yes"
 approvaltests_geo_data_root = "{{ cookiecutter.approvaltests_geo_data_root }}"
 approvaltests_geo_input = "input/{{ cookiecutter.approvaldata_timestamp }}/"
 approvaltests_geo_approved = "approved/{{ cookiecutter.approvaldata_timestamp }}/"
+
+[tool.coverage.run]
+relative_files = true

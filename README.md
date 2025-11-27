@@ -1,41 +1,44 @@
 # Cookiecutter Package for TU Wien
 
-Defines a basic project structure for TU Wien python projects. Utilises the [cookiecutter](https://github.com/cookiecutter/cookiecutter) project to efficiently generate project skeletons, keeping a common format.
+This template (aka cookiecutter) sets up a structure for you to write a python package for TU Wien projects.
+It comes filled with a bunch of modern features from the python ecosystem.
 
-## Installation
+## :battery: All Batteries included
 
-Install cookiecutter in your favourite python environment:
+- :wrench: CI pipelines for `Github Actions` and `Gitlab`
+- :scroll: Documentation from [MyST]
+- :zap: Fast environment and project management with [uv]
+- :musical_note: Task orchestration with [Just]
+- :black_nib: Preconfigured Licenses to choose from
+- :straight_ruler: Testing setup with `pytest`
+- :fishing_pole_and_fish: Pre-commit Hooks
+- :mag: Code Quality Assurance with [ruff] and [ty]
+
+## Useage
+
+> [!NOTE]
+> This cookiecutter tries to adhere to the [Python Developer Tooling Handbook](https://pydevtools.com/handbook/explanation/modern-python-project-setup-guide-for-ai-assistants/)
+
+To initialize a new repository with this `cookiecutter` template run the following command:
 
 ```bash
-pip install cookiecutter
-# or use uvx to install and run it at once
+# if you have cookiecutter installed
+cookiecutter https://github.com/npikall/cookiecutter-py-lib.git
+
+# or if you are using uv
+uvx cookiecutter https://github.com/npikall/cookiecutter-py-lib.git
 ```
 
-You can also install source, see the [official installation documentation](https://cookiecutter.readthedocs.io/en/2.1.1/installation.html) of the cookiecutter project.
+You will be prompted and then your repo will be setup.
 
-## Usage
+## Approvaltests
 
-Now if you want to generate an initial python project skeleton in TU Wien style, navigate to the folder which should contain the project root project folder and run this command:
+If you want to use the [ApprovalTests.Python.GeoExtensions] you can specify the `geo approval test data root` and the `timestamp` of the initial approval data data version.
+This will add `pytest.ini_options` in the `pyproject.toml` file with the basic geo approval tests configurations.
 
-```bash
-cookiecutter https://github.com/TUW-GEO/cookiecutter-tuw-package
-
-# or with uv (no pip install necessary)
-uvx cookiecutter https://github.com/TUW-GEO/cookiecutter-tuw-package
-```
-
-This will prompt with some configuration parameters, e.g., package name, author, etc. for most of which reasonable default values are provided.
-
-Once all parameters have been provided, the skeleton will be generated in the current folder.
-
-## Special Parameters
-
-Some cookiecutter parameters have special behaviour, and depend on their value certain files are generated or not.
-
-### vsc_repo
-
-This currently only supports "gitlab" or "github", and depended on which one you choose, it generates a basic CI test and package pipeline for you, using either gitlab or github services.
-
-### approvaltests_geo_data_root and approvaldata_timestamp
-
-If you want to use the [ApprovalTests.Python.GeoExtensions](https://github.com/TUW-GEO/ApprovalTests.Python.GeoExtensions) you can specify the geo approval test data root and the timestamp of the initial approval data data version. This will generate a `pytest.ini` file with the basic geo approval tests configurations.
+[Just]: https://github.com/casey/just
+[MyST]: https://mystmd.org/
+[ApprovalTests.Python.GeoExtensions]: https://github.com/TUW-GEO/ApprovalTests.Python.GeoExtensions
+[uv]: https://docs.astral.sh/uv/
+[ruff]: https://docs.astral.sh/ruff/
+[ty]: https://docs.astral.sh/ty/

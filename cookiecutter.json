@@ -1,5 +1,5 @@
 {
-  "author": "TU Wien GEO MRS group",
+  "author": "TU Wien GEO RS Group",
   "author_email": "remote.sensing@geo.tuwien.ac.at",
   "project_name": "my-tuw-project",
   "project_description": "my project description",
@@ -8,8 +8,27 @@
   "approvaltests_geo_data_root": "",
   "approvaltests_geo_data_at_ci_vm": "/shares{{ cookiecutter.approvaltests_geo_data_root }}",
   "approvaldata_timestamp": "",
-  "vsc_repo": ["both", "gitlab", "github"],
+  "remote_repo_for_ci": ["both", "gitlab", "github"],
   "external_pypis": "",
-  "package_docker": false,
-  "check_code_quality_in_ci": true
+  "package_docker": ["no", "yes"],
+  "check_code_quality_in_ci": ["yes", "no"],
+  "include_docs": ["yes", "no"],
+  "license": ["MIT", "Unlicense", "Apache License 2.0", "None"],
+  "__prompts__": {
+    "author": "Enter the authors name",
+    "author_email": "Enter the authors email",
+    "project_name": "Select your project name",
+    "project_description": "Add a short description to the project",
+    "url": "Add an URL that is associated with your project (optional)",
+    "project_slug": "This is your python module slug (confirm or change)",
+    "approvaltests_geo_data_root": "(Approvaltest) Set the root path",
+    "approvaltests_geo_data_at_ci_vm": "(Approvaltest) Set the path at CI for the VM",
+    "approvaldata_timestamp": "(Approvaltest) Set a timestamp for the Approval Data",
+    "remote_repo_for_ci": "Select your CI Framework",
+    "external_pypis": "Add an external PyPI if one is needed",
+    "package_docker": "Do you want to package Docker?",
+    "check_code_quality_in_ci": "Do you want to check the code quality with ruff in CI?",
+    "include_docs": "Do you want to include Code Documentation?",
+    "license": "Select an approriate License"
+  }
 }
