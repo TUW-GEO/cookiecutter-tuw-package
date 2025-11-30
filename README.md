@@ -23,10 +23,10 @@ To initialize a new repository with this `cookiecutter` template run the followi
 
 ```bash
 # if you have cookiecutter installed
-cookiecutter https://github.com/npikall/cookiecutter-py-lib.git
+cookiecutter https://github.com/TUW-GEO/cookiecutter-tuw-package
 
 # or if you are using uv
-uvx cookiecutter https://github.com/npikall/cookiecutter-py-lib.git
+uvx cookiecutter https://github.com/TUW-GEO/cookiecutter-tuw-package
 ```
 
 You will be prompted and then your repo will be setup.
