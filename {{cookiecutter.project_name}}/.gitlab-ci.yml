@@ -2,11 +2,11 @@ stages:
   - build
   - test
   - deploy
-{%- if cookiecutter.package_docker %}
+{%- if cookiecutter.package_docker == "yes" %}
   - package
 {%- endif %}
 
-{%- if cookiecutter.check_code_quality_in_ci %}
+{%- if cookiecutter.check_code_quality_in_ci == "yes" %}
 .base_ruff:
   stage: build
   interruptible: true
@@ -95,7 +95,7 @@ deploy-pypi:
   tags:
     - python
 
-{%- if cookiecutter.package_docker %}
+{%- if cookiecutter.package_docker == "yes" %}
 package-docker:
   stage: package
   image: docker:24.0.5
