@@ -24,7 +24,7 @@ Repository = "{{cookiecutter.url}}"
 {%- endif %}
 
 [build-system]
-requires = ["uv_build>=0.9.6,<0.10.0"]
+requires = ["uv_build>=0.9.17,<0.10.0"]
 build-backend = "uv_build"
 
 
@@ -32,8 +32,7 @@ build-backend = "uv_build"
 # Unlike optional dependencies, development dependencies are local-only
 # and will not be included in the project requirements when
 # published to PyPI or other indexes
-dev = [
-{%- if cookiecutter.include_docs == "yes" -%}
+dev = [{% if cookiecutter.include_docs == "yes" %}
  "ipykernel>=7.1.0",
  "mystmd>=1.6.6",{% endif %}
  "pytest>=9.0.1",
@@ -43,13 +42,18 @@ dev = [
 ]
 
 
-# Uncomment the next section to add pre-built wheel files of non-python
+# NOTE: Uncomment the next section to add pre-built wheel files of non-python
 # libraries to your project. In this example GDAL has been choosen.
 # Read more at:
 # https://github.com/astral-sh/uv/issues/11466
 #
-# [tool.uv]
-# find-links = ["https://girder.github.io/large_image_wheels"]
+# [[tool.uv.index]]
+# name = "girder"
+# url = "https://girder.github.io/large_image_wheels"
+# explicit = true
+#
+# [tool.uv.sources]
+# gdal = { index = "girder" }
 
 
 [tool.ruff]
