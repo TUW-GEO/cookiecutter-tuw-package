@@ -51,9 +51,17 @@ dev = [{% if cookiecutter.include_docs == "yes" %}
 # name = "girder"
 # url = "https://girder.github.io/large_image_wheels"
 # explicit = true
+# 
+# [[tool.uv.index]]
+# name = "gisidx"
+# url = "https://gisidx.github.io/gwi"
+# explicit = true
 #
 # [tool.uv.sources]
-# gdal = { index = "girder" }
+# gdal = [
+#   { index = "girder" },
+#   { index = "gisidx" },
+# ]
 
 
 [tool.ruff]
