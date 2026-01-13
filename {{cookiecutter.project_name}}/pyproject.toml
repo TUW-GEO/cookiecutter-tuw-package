@@ -59,8 +59,8 @@ dev = [{% if cookiecutter.include_docs == "yes" %}
 #
 # [tool.uv.sources]
 # gdal = [
-#   { index = "girder" },
-#   { index = "gisidx" },
+#   { index = "girder", marker = "sys_platform != 'windows'" },
+#   { index = "gisidx", marker = "sys_platform == 'windows'" },
 # ]
 
 
