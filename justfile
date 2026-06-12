@@ -7,6 +7,11 @@ alias t := test
 test *args:
     uv run pytest tests/ {{ args }}
 
+# update the template dependencies
+update:
+    (cd template && uvx prek autoupdate)
+    uv run scripts/update_template_dependencies.py
+
 # render template to a temp dir for manual inspection
 render:
     copier copy . ./rendered --overwrite --trust --defaults -r HEAD \
