@@ -1,6 +1,6 @@
-# Cookiecutter Package for TU Wien
+# Copier Package for TU Wien
 
-This template (aka cookiecutter) sets up a structure for you to write a python package for TU Wien projects.
+This template (aka copier) sets up a structure for you to write a python package for TU Wien projects.
 It comes filled with a bunch of modern features from the python ecosystem.
 
 ## :battery: All Batteries included
@@ -14,22 +14,32 @@ It comes filled with a bunch of modern features from the python ecosystem.
 - :fishing_pole_and_fish: Pre-commit Hooks
 - :mag: Code Quality Assurance with [ruff] and [ty]
 
-## Useage
+## Usage
 
 > [!NOTE]
-> This cookiecutter tries to adhere to the [Python Developer Tooling Handbook](https://pydevtools.com/handbook/explanation/modern-python-project-setup-guide-for-ai-assistants/)
+> This copier template tries to adhere to the [Python Developer Tooling Handbook](https://pydevtools.com/handbook/explanation/modern-python-project-setup-guide-for-ai-assistants/)
 
-To initialize a new repository with this `cookiecutter` template run the following command:
+To initialize a new repository with this `copier` template run the following command:
 
 ```bash
-# if you have cookiecutter installed
-cookiecutter https://github.com/TUW-GEO/cookiecutter-tuw-package
+# if you have copier installed
+copier copy https://github.com/TUW-GEO/cookiecutter-tuw-package <destination>
 
 # or if you are using uv
-uvx cookiecutter https://github.com/TUW-GEO/cookiecutter-tuw-package
+uvx copier copy https://github.com/TUW-GEO/cookiecutter-tuw-package <destination>
 ```
 
 You will be prompted and then your repo will be setup.
+
+## Updating
+
+One advantage of `copier` over `cookiecutter` is the ability to pull in template updates into an existing project:
+
+```bash
+copier update
+```
+
+Run this inside your generated project to apply changes from the template.
 
 ## Approvaltests
 
