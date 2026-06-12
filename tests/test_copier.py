@@ -48,7 +48,8 @@ def test_test_meta_renders_correctly(copied_project: Path):
 
 def test_justfile_renders_correctly(copied_project: Path):
     got = (copied_project / "Justfile").read_text()
-    assert 'ci PYTHON="3.12":\n    uv run --python={{ PYTHON }} ruff' in got
+    assert 'if git rev-parse --git-dir > /dev/null 2>&1; then' in got
+    assert 'git init --initial-branch=main' in got
 
 
 def test_license_renders_correctly(copied_project: Path):
