@@ -2,11 +2,11 @@ stages:
   - build
   - test
   - deploy
-{%- if cookiecutter.package_docker == "yes" %}
+{%- if use_docker %}
   - package
 {%- endif %}
 
-{%- if cookiecutter.check_code_quality_in_ci == "yes" %}
+{%- if "Lint_Format" in ci_github_workflows %}
 .base_ruff:
   stage: build
   interruptible: true
@@ -33,22 +33,22 @@ Ruff Format:
 .test-template:
   stage: test
   image: swamydev/geo-python:3.12-slim-bookworm
-{%- if (cookiecutter.approvaltests_geo_data_root and (cookiecutter.approvaltests_geo_data_at_ci_vm != cookiecutter.approvaltests_geo_data_root)) or cookiecutter.external_pypis %}
+{%- if use_approvaltests or use_external_pypis %}
   before_script:
-{%- if cookiecutter.approvaltests_geo_data_root and (cookiecutter.approvaltests_geo_data_at_ci_vm != cookiecutter.approvaltests_geo_data_root) %}
+{%- if use_approvaltests %}
     - ci/setup-approval-testdata.sh
 {%- endif %}
-{%- if cookiecutter.external_pypis %}
+{%- if use_external_pypis %}
     - ci/add-pypi-indices.sh ${CI_JOB_TOKEN}
 {%- endif %}
 {%- endif %}
-{%- if cookiecutter.approvaltests_geo_data_root %}
+{%- if use_approvaltests %}
   after_script:
     - mkdir approvals-artifacts
-    - mv {{ cookiecutter.approvaltests_geo_data_root }}/approved/**/*received* ./approvals-artifacts || true
+    - mv {{ approval_data_root }}/approved/**/*received* ./approvals-artifacts || true
 {%- endif %}
   coverage: '/^TOTAL.+?(\d+\%)$/'
-{%- if cookiecutter.approvaltests_geo_data_root %}
+{%- if use_approvaltests %}
   artifacts:
     when: on_failure
     paths:
@@ -56,7 +56,7 @@ Ruff Format:
     expire_in: 1 day
 {%- endif %}
   tags:
-{%- if cookiecutter.approvaltests_geo_data_root %}
+{%- if use_approvaltests %}
     - eodc-storage
 {%- else %}
     - python
@@ -75,7 +75,7 @@ test-release:
   extends: .test-template
   script:
     - uv sync --no-sources --no-install-package gdal && uv pip install gdal=="$(shell gdal-config --version).*"
-    - uv run pytest tests/ -rsx --verbose --color=yes --cov={{cookiecutter.project_slug}} --cov-report term-missing --junitxml ./ci-test-results.xml
+    - uv run pytest tests/ -rsx --verbose --color=yes --cov={{ py_import_name }} --cov-report term-missing --junitxml ./ci-test-results.xml
     - coverage json
   rules:
     - if: '$CI_COMMIT_TAG'
@@ -95,7 +95,7 @@ deploy-pypi:
   tags:
     - python
 
-{%- if cookiecutter.package_docker == "yes" %}
+{%- if use_docker %}
 package-docker:
   stage: package
   image: docker:24.0.5
@@ -131,5 +131,3 @@ package-trunk-docker:
   tags:
     - dind
 {%- endif %}
-
-

@@ -1,4 +1,4 @@
-from {{ cookiecutter.project_slug }} import greet
+from {{ py_import_name }} import greet
 
 
 def test_that_testing_package_is_working():
@@ -7,6 +7,6 @@ def test_that_testing_package_is_working():
 
 def test_greet_returns_correctly():
     got = greet()
-    want = "Hello from {{ cookiecutter.project_slug }}"
+    want = "Hello from {{ py_import_name }}"
 
     assert got == want

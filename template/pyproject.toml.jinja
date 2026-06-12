@@ -1,8 +1,8 @@
 [project]
-authors = [{ name = "{{cookiecutter.author}}", email = "{{cookiecutter.author_email}}" }]
-name = "{{cookiecutter.project_slug}}"
+authors = [{ name = "{{ author }}", email = "{{ author_email }}" }]
+name = "{{ py_import_name }}"
 version = "0.1.0"
-description = "{{cookiecutter.project_description}}"
+description = "{{ project_description }}"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
@@ -18,9 +18,9 @@ classifiers = [
     "Natural Language :: English",
 ]
 
-{%- if cookiecutter.url %}
+{%- if project_url %}
 [project.urls]
-Repository = "{{cookiecutter.url}}"
+Repository = "{{ project_url }}"
 {%- endif %}
 
 [build-system]
@@ -32,7 +32,7 @@ build-backend = "uv_build"
 # Unlike optional dependencies, development dependencies are local-only
 # and will not be included in the project requirements when
 # published to PyPI or other indexes
-dev = [{% if cookiecutter.include_docs == "yes" %}
+dev = [{% if include_docs %}
  "ipykernel>=7.1.0",
  "mystmd>=1.6.6",{% endif %}
  "pytest>=9.0.1",
@@ -51,7 +51,7 @@ dev = [{% if cookiecutter.include_docs == "yes" %}
 # name = "girder"
 # url = "https://girder.github.io/large_image_wheels"
 # explicit = true
-# 
+#
 # [[tool.uv.index]]
 # name = "gisidx"
 # url = "https://gisidx.github.io/gwi"
@@ -97,10 +97,10 @@ docstring-code-line-length = "dynamic"
 
 
 [tool.pytest.ini_options]
-addopts = "--cov={{ cookiecutter.project_slug }} --cov-report term-missing -rsx --verbose --color=yes"
-approvaltests_geo_data_root = "{{ cookiecutter.approvaltests_geo_data_root }}"
-approvaltests_geo_input = "input/{{ cookiecutter.approvaldata_timestamp }}/"
-approvaltests_geo_approved = "approved/{{ cookiecutter.approvaldata_timestamp }}/"
-
+addopts = "--cov={{ py_import_name }} --cov-report term-missing -rsx --verbose --color=yes"
+{% if use_approvaltests %}approvaltests_geo_data_root = "{{ approval_data_root }}"
+approvaltests_geo_input = "input/{{ approval_timestamp }}/"
+approvaltests_geo_approved = "approved/{{ approval_timestamp }}/"
+{% endif %}
 [tool.coverage.run]
 relative_files = true
