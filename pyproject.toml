@@ -1,10 +1,13 @@
 [project]
 name = "cookiecutter-tuw-package"
 version = "0.1.0"
-description = "Add your description here"
+description = "TUW Package Copier Template"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["cookiecutter"]
+dependencies = [
+    "copier>=9.0",
+    "copier-template-extensions>=0.3",
+]
 
 [dependency-groups]
 dev = [
