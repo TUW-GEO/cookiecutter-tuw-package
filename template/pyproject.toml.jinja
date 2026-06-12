@@ -24,7 +24,7 @@ Repository = "{{ project_url }}"
 {%- endif %}
 
 [build-system]
-requires = ["uv_build>=0.9.17,<0.10.0"]
+requires = ["uv_build>=0.11,<0.12"]
 build-backend = "uv_build"
 
 
@@ -33,11 +33,11 @@ build-backend = "uv_build"
 # and will not be included in the project requirements when
 # published to PyPI or other indexes
 dev = [{% if include_docs %}
- "ipykernel>=7.1.0",
- "mystmd>=1.6.6",{% endif %}
- "pytest>=9.0.1",
- "pytest-cov>=7.0.0",
- "ruff>=0.14.5",
+ "ipykernel>=7.3.0",
+ "mystmd>=1.10.1",{% endif %}
+ "pytest>=9.0.3",
+ "pytest-cov>=7.1.0",
+ "ruff>=0.15.17",
  "ty>=0.0.1a27",
 ]
 
