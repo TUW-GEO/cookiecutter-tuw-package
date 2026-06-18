@@ -1,0 +1,106 @@
+[project]
+authors = [{ name = "{{ author }}", email = "{{ author_email }}" }]
+name = "{{ py_import_name }}"
+version = "0.1.0"
+description = "{{ project_description }}"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Software Development :: Libraries",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: POSIX",
+    "Natural Language :: English",
+]
+
+{%- if project_url %}
+[project.urls]
+Repository = "{{ project_url }}"
+{%- endif %}
+
+[build-system]
+requires = ["uv_build>=0.11,<0.12"]
+build-backend = "uv_build"
+
+
+[dependency-groups]
+# Unlike optional dependencies, development dependencies are local-only
+# and will not be included in the project requirements when
+# published to PyPI or other indexes
+dev = [{% if include_docs %}
+ "ipykernel>=7.3.0",
+ "mystmd>=1.10.1",{% endif %}
+ "pytest>=9.0.3",
+ "pytest-cov>=7.1.0",
+ "ruff>=0.15.17",
+ "ty>=0.0.1a27",
+]
+
+
+# NOTE: Uncomment the next section to add pre-built wheel files of non-python
+# libraries to your project. In this example GDAL has been choosen.
+# Read more at:
+# https://github.com/astral-sh/uv/issues/11466
+#
+# [[tool.uv.index]]
+# name = "girder"
+# url = "https://girder.github.io/large_image_wheels"
+# explicit = true
+#
+# [[tool.uv.index]]
+# name = "gisidx"
+# url = "https://gisidx.github.io/gwi"
+# explicit = true
+#
+# [tool.uv.sources]
+# gdal = [
+#   { index = "girder", marker = "sys_platform != 'windows'" },
+#   { index = "gisidx", marker = "sys_platform == 'windows'" },
+# ]
+
+
+[tool.ruff]
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "COM812",  # missing-trailing-comma (may conflict with ruff formatter)
+    "D203",    # incorrect-blank-line-before-class (conflicts with D211)
+    "D213",    # multi-line-summary-second-line (conflicts with D212)
+]
+fixable = ["ALL"]
+unfixable = []
+
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests}/*" = ["E402", "ANN201", "D", "INP001", "S101"]
+
+
+[tool.ruff.format]
+# Same as Black.
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+
+
+[tool.pytest.ini_options]
+addopts = "--cov={{ py_import_name }} --cov-report term-missing -rsx --verbose --color=yes"
+{% if use_approvaltests %}approvaltests_geo_data_root = "{{ approval_data_root }}"
+approvaltests_geo_input = "input/{{ approval_timestamp }}/"
+approvaltests_geo_approved = "approved/{{ approval_timestamp }}/"
+{% endif %}
+[tool.coverage.run]
+relative_files = true

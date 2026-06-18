@@ -1,0 +1,123 @@
+# CONFIGURATION -------------------------
+_min_copier_version: "9"
+_envops:
+  autoescape: false
+  keep_trailing_newline: true
+_subdirectory: template
+_templates_suffix: .jinja
+_jinja_extensions:
+  - copier_template_extensions.TemplateExtensionLoader
+
+# PROMPT --------------------------------
+project_name:
+  type: str
+  help: Set the project name
+
+project_description:
+  type: str
+  help: Short description of the project
+  default: ""
+
+project_url:
+  type: str
+  help: URL associated with the project (optional)
+  default: ""
+
+author:
+  type: str
+  help: Author's name
+  default: "TU Wien GEO RS Group"
+
+author_email:
+  type: str
+  help: Author's email
+  default: "remote.sensing@geo.tuwien.ac.at"
+
+ci_github:
+  type: bool
+  help: Use GitHub CI?
+  default: true
+
+ci_github_workflows:
+  type: str
+  when: "{{ ci_github }}"
+  help: Select GitHub workflows to include
+  default: '["Lint_Format", "Test_Coverage", "Test_Platforms"]'
+  multiselect: true
+  choices:
+    - "Lint_Format"
+    - "Test_Coverage"
+    - "Test_Platforms"
+
+ci_gitlab:
+  type: bool
+  help: Use GitLab CI?
+  default: true
+
+use_approvaltests:
+  type: bool
+  help: Include approval tests support?
+  default: false
+
+approval_data_root:
+  type: str
+  when: "{{ use_approvaltests }}"
+  help: Root path for approval test data
+  default: ""
+
+approval_timestamp:
+  type: str
+  when: "{{ use_approvaltests }}"
+  help: Timestamp for approval data (e.g. 2024-01-01)
+  default: ""
+
+use_external_pypis:
+  type: bool
+  help: Include external PyPI indices?
+  default: false
+
+external_pypis:
+  type: str
+  when: "{{ use_external_pypis }}"
+  help: External PyPI group IDs (comma-separated)
+  default: ""
+
+use_docker:
+  type: bool
+  help: Include Docker packaging?
+  default: false
+
+include_docs:
+  type: bool
+  help: Include MyST documentation?
+  default: true
+
+copyright_license:
+  type: str
+  help: Select a license
+  default: MIT
+  choices:
+    MIT License: MIT
+    Apache License 2.0: Apache-2.0
+    The Unlicense: Unlicense
+    None: None
+
+# HIDDEN/DERIVED ------------------------
+approval_data_ci_vm:
+  type: str
+  when: false
+  default: "/shares{{ approval_data_root }}"
+
+py_import_name:
+  type: str
+  when: false
+  default: "{{ project_name | lower | replace('-', '_') | replace(' ', '_') }}"
+  validator: >-
+    {% if not (py_import_name | regex_search('^[_a-zA-Z][_a-zA-Z0-9]+$')) %}
+    Invalid Python identifier: '{{ py_import_name }}'. Use letters, digits and underscores only.
+    {% endif %}
+
+py_dist_name:
+  type: str
+  when: false
+  default: "{{ project_name | lower | replace('_', '-') | replace(' ', '-') }}"

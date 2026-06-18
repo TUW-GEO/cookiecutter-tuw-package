@@ -1,14 +1,22 @@
 [project]
 name = "cookiecutter-tuw-package"
 version = "0.1.0"
-description = "Add your description here"
+description = "TUW Package Copier Template"
 readme = "README.md"
-requires-python = ">=3.11"
-dependencies = ["cookiecutter"]
+requires-python = ">=3.14"
+dependencies = [
+    "copier>=9.0",
+    "copier-template-extensions>=0.3",
+]
 
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
+    {include-group = "script"},
+]
+script = [
+    "httpx>=0.28.1",
+    "rich>=15.0.0",
 ]
 
 [tool.pytest.ini_options]

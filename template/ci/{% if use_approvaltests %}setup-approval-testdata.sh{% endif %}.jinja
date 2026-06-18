@@ -1,0 +1,5 @@
+#!/bin/bash
+
+mkdir -p {{ approval_data_root }}/approved
+ln -s {{ approval_data_ci_vm }}/input {{ approval_data_root }}/input
+cp -r {{ approval_data_ci_vm }}/approved/{{ approval_timestamp }} {{ approval_data_root }}/approved/
